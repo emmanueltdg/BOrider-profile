@@ -1,283 +1,892 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Search Visibility Platform Comparison</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .nav-active {
-            background-color: #eff6ff;
-            color: #2563eb;
-            border-right: 4px solid #2563eb;
-        }
-        .section-hidden { display: none; }
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .best-value-badge {
-            background: #dcfce7;
-            color: #166534;
-            font-size: 0.7rem;
-            padding: 2px 8px;
-            border-radius: 99px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-900">
+import React, { useState, useEffect } from 'react';
+import { 
+  User, 
+  MapPin, 
+  Calendar, 
+  Bike, 
+  Award, 
+  Quote, 
+  Plus, 
+  Trash, 
+  Copy, 
+  Check, 
+  Download, 
+  Sparkles, 
+  Eye, 
+  Code, 
+  HelpCircle, 
+  RotateCcw, 
+  Smartphone, 
+  Monitor, 
+  BookOpen, 
+  ArrowRight,
+  ChevronRight,
+  FileText
+} from 'lucide-react';
 
-    <div class="flex min-h-screen">
-        <!-- Sidebar Navigation -->
-        <nav class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full">
-            <div class="p-6 border-bottom border-slate-100">
-                <h1 class="text-xl font-bold text-slate-800">AI Visibility</h1>
-                <p class="text-xs text-slate-500 uppercase tracking-widest mt-1">Comparison Tool</p>
-            </div>
-            
-            <div class="flex-grow mt-4">
-                <button onclick="showSection('overview', this)" class="nav-item nav-active w-full text-left px-6 py-4 flex items-center gap-3 transition-all hover:bg-slate-50">
-                    <i class="fa-solid fa-house w-5"></i>
-                    <span class="font-semibold">Overview</span>
-                </button>
-                <button onclick="showSection('functionality', this)" class="nav-item w-full text-left px-6 py-4 flex items-center gap-3 transition-all hover:bg-slate-50">
-                    <i class="fa-solid fa-list-check w-5"></i>
-                    <span class="font-semibold">Functionality</span>
-                </button>
-                <button onclick="showSection('pricing', this)" class="nav-item w-full text-left px-6 py-4 flex items-center gap-3 transition-all hover:bg-slate-50">
-                    <i class="fa-solid fa-dollar-sign w-5"></i>
-                    <span class="font-semibold">Best Pricing</span>
-                </button>
-                <button onclick="showSection('verdict', this)" class="nav-item w-full text-left px-6 py-4 flex items-center gap-3 transition-all hover:bg-slate-50">
-                    <i class="fa-solid fa-award w-5"></i>
-                    <span class="font-semibold">Final Verdict</span>
-                </button>
-            </div>
+// PRESET DATA FOR BIKESONLINE ATHLETES
+const PRESETS = {
+  sam: {
+    riderName: "Sam Reynolds",
+    tagline: "The Architect of Freeride",
+    slug: "rider-profile-sam-reynolds",
+    metaTitle: "Rider Profile: Sam Reynolds – The Architect of Freeride",
+    metaDescription: "Explore the journey of Sam Reynolds, pioneer of freeride mountain biking. From Red Bull Rampage to his iconic Darkfest builds and 2026 return to Polygon Bikes.",
+    introParagraph: "Sam Reynolds is one of the most influential figures in modern freeride mountain biking. Renowned for his calm approach to high-risk riding and his ability to push the limits of what is possible on a mountain bike, Sam has built a career defined by progression, creativity, and consistency at the very top level of the sport.",
+    discipline: "MTB – Freeride / Big Air",
+    hometown: "Surrey, UK",
+    born: "4 June 1991",
+    bikeChoice: "Polygon Collossus N9 & Mt Bromo N7",
+    primarySponsor: "Polygon Bikes",
+    imageHero: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1200", // Fallback high-quality cycling image
+    imageAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400",
+    quoteText: "I'm so excited to be back again with the Polygon Bikes crew for 2026 onwards! Looking back at the great times we've had in the past, I couldn't be happier to continue where we left off. We've got some wicked projects in the works and some pretty special bikes to reveal throughout the year.",
+    quoteAuthor: "Sam Reynolds",
+    sections: [
+      {
+        id: "1",
+        title: "Career Highlights",
+        content: "Sam's competitive career spans elite freeride and slopestyle events worldwide. He rose to global prominence at the 2015 Red Bull Rampage, where he claimed the Best Trick award after landing a superman over a massive 72-foot canyon gap. In the same event, he went on to debut the now-iconic \"Rock Solid\" trick, cementing his reputation as a rider willing to innovate on the biggest stage."
+      },
+      {
+        id: "2",
+        title: "Darkfest & Course Building",
+        content: "Sam is not only a standout rider but also a key architect of freeride's progression. As one of the driving forces behind Darkfest, he has helped design and build some of the largest and most technical jumps ever seen in mountain biking. His involvement in the FEST Series further highlights his role in shaping the future of freeride, both on and off the bike."
+      },
+      {
+        id: "3",
+        title: "Return to Polygon Bikes",
+        content: "In 2026, Sam Reynolds officially returned to Polygon Bikes after five years away, renewing a partnership that previously spanned a decade. The reunion marks a new chapter focused on big-air projects, cinematic video content, and select international showcases."
+      }
+    ]
+  },
+  matt: {
+    riderName: "Matt Jones",
+    tagline: "Slopestyle Master & Content Pioneer",
+    slug: "rider-profile-matt-jones",
+    metaTitle: "Rider Profile: Matt Jones - Slopestyle MTB Athlete",
+    metaDescription: "From X-Games success to founding Helfare and MAVRIX, explore the high-flying world, creative video projects, and entrepreneurial mind of Matt Jones.",
+    introParagraph: "Matt Jones is one of the most recognisable and influential figures in modern slopestyle mountain biking. Known for his technical precision, competitive mindset, and unmistakable personality, Matt has built a career that blends elite-level competition with creative storytelling and industry leadership.",
+    discipline: "Freeride / Slopestyle",
+    hometown: "Milton Keynes, UK",
+    born: "13 August 1994",
+    bikeChoice: "Marin Alcatraz & Rift Zone",
+    primarySponsor: "Marin Bikes / Red Bull",
+    imageHero: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&q=80&w=1200",
+    imageAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400",
+    quoteText: "Every session became a contest and progression was a daily expectation. Pushing the boundaries of what tricks are physically possible is what keeps me obsessed with this sport every single day.",
+    quoteAuthor: "Matt Jones",
+    sections: [
+      {
+        id: "1",
+        title: "Creative Direction & Film",
+        content: "Beyond contests, Matt has played a major role in redefining how slopestyle riders connect with audiences. His video projects, including Frames of Mind and Design and Conquer, showcase not only technical riding but also thoughtful course design, progression, and high-production storytelling."
+      },
+      {
+        id: "2",
+        title: "Digital Influence",
+        content: "Matt runs one of the world's top athlete-led mountain bike YouTube channels, offering behind-the-scenes insight into competition life, course building, and the mental side of elite riding. His openness and authenticity have made him a key voice in the global MTB community."
+      },
+      {
+        id: "3",
+        title: "Industry & Entrepreneurship",
+        content: "Off the bike, Matt is a co-founder of the global MTB and lifestyle brand Helfare, and a co-founder of MAVRIX, a studio focused on creating authentic, athlete-led extreme sports video games across console, PC, and mobile platforms."
+      }
+    ]
+  },
+  blank: {
+    riderName: "New Rider",
+    tagline: "The Next Generation of Shredding",
+    slug: "rider-profile-new-rider",
+    metaTitle: "Rider Profile: New Rider – BikesOnline Team",
+    metaDescription: "Meet the newest addition to the BikesOnline athlete lineup. Discover their background, favorite custom setups, and career highlights.",
+    introParagraph: "A rising star in the global biking community, our newest team rider has been turning heads and crushing times on the local circuit. With a unique style and unmatched dedication, they represent the absolute future of the discipline.",
+    discipline: "MTB – Enduro / Downhill",
+    hometown: "Sydney, Australia",
+    born: "15 October 2002",
+    bikeChoice: "Polygon Siskiu T8 / Alpine Trail",
+    primarySponsor: "BikesOnline",
+    imageHero: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&q=80&w=1200",
+    imageAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400",
+    quoteText: "Joining the BikesOnline roster is a dream come true. The gear, the support, and the community here are second to none, and I can't wait to see what we build together this season.",
+    quoteAuthor: "New Rider",
+    sections: [
+      {
+        id: "1",
+        title: "Early Career & Progression",
+        content: "Starting out on small BMX tracks, they quickly transitioned to rugged downhill terrain. Over the past three seasons, they have racked up numerous podium positions and established themselves as a relentless force."
+      }
+    ]
+  }
+};
 
-            <div class="p-6 text-xs text-slate-400 border-t border-slate-100">
-                &copy; 2024 BikesOnline Strategy
-            </div>
-        </nav>
+export default function App() {
+  // State management for template fields
+  const [formData, setFormData] = useState(PRESETS.sam);
+  const [activeTab, setActiveTab] = useState('preview'); // 'preview' | 'code' | 'help'
+  const [previewMode, setPreviewMode] = useState('desktop'); // 'desktop' | 'mobile'
+  const [copyStatus, setCopyStatus] = useState(false);
+  const [selectedPreset, setSelectedPreset] = useState('sam');
 
-        <!-- Main Content Area -->
-        <main class="ml-64 flex-grow p-8 md:p-12">
-            
-            <!-- Section: Overview -->
-            <section id="overview" class="content-section fade-in">
-                <div class="max-w-4xl">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Market Overview</h2>
-                    <p class="text-lg text-slate-600 mb-8">Evaluating the best platforms for Answer Engine Optimization (AEO) to maintain brand visibility across AI search models like ChatGPT, Perplexity, and Gemini.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="font-bold text-slate-800 mb-2">Primary Goal</h3>
-                            <p class="text-slate-600 text-sm">To identify a tool that tracks brand sentiment and visibility in AU/US markets at a scalable price point.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="font-bold text-slate-800 mb-2">Key Competitors</h3>
-                            <p class="text-slate-600 text-sm">Peec AI, Writesonic (SEO/AEO Suite), and Ahrefs Brand Radar.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  // Load preset data
+  const handlePresetChange = (presetKey) => {
+    setSelectedPreset(presetKey);
+    setFormData(PRESETS[presetKey]);
+  };
 
-            <!-- Section: Functionality -->
-            <section id="functionality" class="content-section section-hidden fade-in">
-                <div class="max-w-5xl">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-8">Functionality Matrix</h2>
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-200">
-                                    <th class="p-5 font-bold text-slate-700">Feature</th>
-                                    <th class="p-5 font-bold text-green-600 bg-green-50/30">Peec AI</th>
-                                    <th class="p-5 font-bold text-slate-700">Writesonic</th>
-                                    <th class="p-5 font-bold text-slate-700">Ahrefs</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                <tr>
-                                    <td class="p-5 font-semibold">Model Tracking</td>
-                                    <td class="p-5 bg-green-50/20 text-sm">ChatGPT, Perplexity, Gemini</td>
-                                    <td class="p-5 text-sm">Broad SEO + GEO focus</td>
-                                    <td class="p-5 text-sm">Massive Global Database</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-5 font-semibold">Actionability</td>
-                                    <td class="p-5 bg-green-50/20 text-sm">Prioritized Gap Analysis</td>
-                                    <td class="p-5 text-sm">AI Content Rewriting</td>
-                                    <td class="p-5 text-sm">Visibility Graphs</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-5 font-semibold">Sentiment</td>
-                                    <td class="p-5 bg-green-50/20 text-sm">Standard (0-100 score)</td>
-                                    <td class="p-5 text-sm">Gated ($499+ Plan)</td>
-                                    <td class="p-5 text-sm">Reach focused</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-5 font-semibold">Regions</td>
-                                    <td class="p-5 bg-green-50/20 text-sm text-green-700 font-medium">AU vs. US Toggles</td>
-                                    <td class="p-5 text-sm">Global Markets</td>
-                                    <td class="p-5 text-sm">Worldwide Index</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+  // Field change handler
+  const handleChange = (field, value) => {
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+      
+      // Auto-update Meta Title & Meta Description based on name/tagline/intro for consistency
+      if (field === 'riderName' || field === 'tagline') {
+        const name = field === 'riderName' ? value : prev.riderName;
+        const tag = field === 'tagline' ? value : prev.tagline;
+        updated.metaTitle = `Rider Profile: ${name} – ${tag}`;
+      }
+      if (field === 'introParagraph') {
+        updated.metaDescription = value.slice(0, 155) + (value.length > 155 ? '...' : '');
+      }
+      
+      return updated;
+    });
+  };
 
-            <!-- Section: Pricing -->
-            <section id="pricing" class="content-section section-hidden fade-in">
-                <div class="max-w-4xl">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-4">Recommended Pricing</h2>
-                    <p class="text-slate-600 mb-8">We've updated the comparison to include the Professional tier, which offers a robust middle-ground for scaling brands.</p>
-                    
-                    <div class="space-y-6">
-                        <!-- Peec AI Advanced -->
-                        <div class="bg-white p-6 rounded-2xl border-2 border-green-500 shadow-lg shadow-green-100 relative">
-                            <div class="absolute -top-3 right-6 best-value-badge">Best for Reporting</div>
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-800">Peec AI (Advanced)</h3>
-                                    <p class="text-sm text-slate-500 italic">Full sentiment logic + Regional Gap Analysis</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-3xl font-bold text-green-600">$495</span>
-                                    <span class="text-slate-400 text-sm">/mo</span>
-                                </div>
-                            </div>
-                            <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-green-600" style="width: 70%"></div>
-                            </div>
-                        </div>
+  // Sections dynamic list management
+  const handleSectionChange = (id, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      sections: prev.sections.map(sec => sec.id === id ? { ...sec, [field]: value } : sec)
+    }));
+  };
 
-                        <!-- Peec AI Professional - NEW -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 hover:border-blue-300 transition-colors">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-800">Peec AI (Professional)</h3>
-                                    <p class="text-sm text-slate-500 italic">Core AI tracking + Weekly action roadmap</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-3xl font-bold text-slate-800">$245</span>
-                                    <span class="text-slate-400 text-sm">/mo</span>
-                                </div>
-                            </div>
-                            <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500" style="width: 35%"></div>
-                            </div>
-                        </div>
+  const addSection = () => {
+    const newId = Date.now().toString();
+    setFormData(prev => ({
+      ...prev,
+      sections: [...prev.sections, { id: newId, title: "New Section Title", content: "Write details here..." }]
+    }));
+  };
 
-                        <!-- Writesonic Growth -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-800">Writesonic (Growth)</h3>
-                                    <p class="text-sm text-slate-500 italic">Required tier for Sentiment Tracking</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-3xl font-bold text-blue-600">$499</span>
-                                    <span class="text-slate-400 text-sm">/mo</span>
-                                </div>
-                            </div>
-                            <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-400" style="width: 72%"></div>
-                            </div>
-                        </div>
+  const removeSection = (id) => {
+    setFormData(prev => ({
+      ...prev,
+      sections: prev.sections.filter(sec => sec.id !== id)
+    }));
+  };
 
-                        <!-- Ahrefs Enterprise -->
-                        <div class="bg-white p-6 rounded-2xl border border-slate-200 opacity-80">
-                            <div class="flex justify-between items-start mb-4">
-                                <div>
-                                    <h3 class="text-xl font-bold text-slate-800">Ahrefs (Enterprise)</h3>
-                                    <p class="text-sm text-slate-500 italic">Includes Brand Radar addon suite</p>
-                                </div>
-                                <div class="text-right">
-                                    <span class="text-3xl font-bold text-slate-600">$699</span>
-                                    <span class="text-slate-400 text-sm">/mo</span>
-                                </div>
-                            </div>
-                            <div class="w-full h-4 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-slate-400" style="width: 100%"></div>
-                            </div>
-                        </div>
-                    </div>
+  // RESET FORM
+  const resetForm = () => {
+    setFormData(PRESETS[selectedPreset]);
+  };
 
-                    <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                            <p class="text-xs font-bold text-blue-700 uppercase mb-1">Growth Pick</p>
-                            <p class="text-sm text-slate-700"><strong>Peec AI Professional ($245):</strong> The best balance of cost and tracking depth for mid-sized teams.</p>
-                        </div>
-                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                            <p class="text-xs font-bold text-slate-500 uppercase mb-1">Budget Entry</p>
-                            <p class="text-sm text-slate-700"><strong>Peec AI Starter ($95):</strong> Basic brand mention monitoring without advanced logic.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+  // HTML Generation Core Engine (Clean inline styles + structural HTML ready for Bloggle Custom HTML blocks)
+  const generateHTML = () => {
+    const {
+      riderName,
+      tagline,
+      metaTitle,
+      metaDescription,
+      introParagraph,
+      discipline,
+      hometown,
+      born,
+      bikeChoice,
+      primarySponsor,
+      quoteText,
+      quoteAuthor,
+      sections,
+      imageHero,
+      imageAvatar
+    } = formData;
 
-            <!-- Section: Verdict -->
-            <section id="verdict" class="content-section section-hidden fade-in">
-                <div class="max-w-5xl">
-                    <h2 class="text-4xl font-bold text-slate-900 mb-8">Strategic Recommendation</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Winner -->
-                        <div class="col-span-1 md:col-span-2 bg-green-600 text-white p-8 rounded-3xl shadow-xl shadow-green-200">
-                            <div class="flex items-center gap-3 mb-4">
-                                <i class="fa-solid fa-crown text-3xl text-yellow-300"></i>
-                                <h3 class="text-2xl font-bold">Top Choice: Peec AI</h3>
-                            </div>
-                            <p class="text-green-50 mb-6 text-lg">Ideal for BikesOnline. With the addition of the $245/mo Pro tier, Peec AI now offers an even smoother transition path from basic tracking to enterprise reporting.</p>
-                            <ul class="space-y-3">
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-300"></i> Most Flexible Pricing ($95 - $495)</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-300"></i> Native Sentiment Tracking</li>
-                                <li class="flex items-center gap-2"><i class="fa-solid fa-check text-yellow-300"></i> Actionable Weekly Roadmaps</li>
-                            </ul>
-                        </div>
+    const sectionsHTML = sections.map(sec => `
+      <div class="bo-profile-section" style="margin-bottom: 40px; border-bottom: 1px solid #f0f0f0; padding-bottom: 30px;">
+        <h3 style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #111111; margin-top: 0; margin-bottom: 15px; letter-spacing: -0.5px; text-transform: uppercase;">${sec.title}</h3>
+        <p style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.7; color: #444444; margin: 0; text-align: justify;">${sec.content}</p>
+      </div>
+    `).join('');
 
-                        <!-- Secondary -->
-                        <div class="bg-white border border-slate-200 p-8 rounded-3xl">
-                            <h3 class="text-xl font-bold text-slate-800 mb-4">The Alternative</h3>
-                            <h4 class="font-bold text-blue-600 mb-1">Writesonic</h4>
-                            <p class="text-slate-500 text-sm mb-4">Choose if you need content automation alongside tracking.</p>
-                            <hr class="mb-4">
-                            <h4 class="font-bold text-red-500 mb-1">Ahrefs</h4>
-                            <p class="text-slate-500 text-sm">Avoid for standalone AEO tracking due to higher costs ($699).</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    const quoteSectionHTML = quoteText ? `
+      <div class="bo-profile-quote" style="background-color: #f9f9f9; border-left: 5px solid #0056b3; padding: 25px 30px; margin: 40px 0; border-radius: 4px;">
+        <p style="font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 1.6; color: #222222; margin: 0 0 10px 0;">“${quoteText}”</p>
+        <span style="font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 700; color: #0056b3; text-transform: uppercase; letter-spacing: 1px;">— ${quoteAuthor || riderName}</span>
+      </div>
+    ` : '';
 
-        </main>
+    return `<!-- 
+  BIKESONLINE UNIFORM RIDER PROFILE TEMPLATE
+  Optimized for Bloggle Custom HTML Blocks & Shopify Editor.
+  
+  Meta Title: ${metaTitle}
+  Meta Description: ${metaDescription}
+-->
+<div class="bo-athlete-premium-container" style="max-width: 1000px; margin: 0 auto; padding: 20px; font-family: 'Helvetica Neue', Arial, sans-serif; color: #1a1a1a; box-sizing: border-box;">
+  
+  <!-- HERO HEADLINE & META INFO -->
+  <div class="bo-profile-header" style="text-align: center; margin-bottom: 40px; border-bottom: 2px solid #111111; padding-bottom: 30px;">
+    <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #0056b3; margin-bottom: 10px;">TEAM BIKESONLINE ATHLETE PROFILE</div>
+    <h1 style="font-size: clamp(32px, 5vw, 48px); font-weight: 900; line-height: 1.1; margin: 0 0 10px 0; color: #111111; text-transform: uppercase; letter-spacing: -1px;">${riderName}</h1>
+    <p style="font-size: clamp(18px, 2.5vw, 22px); font-weight: 300; color: #666666; margin: 0; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.3;">${tagline}</p>
+  </div>
+
+  <!-- HERO BANNER WRAPPER -->
+  <div class="bo-profile-hero" style="position: relative; border-radius: 8px; overflow: hidden; height: 380px; background-image: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.6)), url('${imageHero || 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1200'}'); background-size: cover; background-position: center; margin-bottom: 40px;">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 30px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="${imageAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400'}" alt="${riderName}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 10px rgba(0,0,0,0.3);" onerror="this.style.display='none'">
+        <div>
+          <h2 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${riderName}</h2>
+          <span style="display: inline-block; background-color: #0056b3; color: #ffffff; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 3px; text-transform: uppercase; margin-top: 5px; letter-spacing: 0.5px;">PRO RIDER</span>
+        </div>
+      </div>
+      <div style="background-color: rgba(17, 17, 17, 0.85); backdrop-filter: blur(5px); color: #ffffff; padding: 8px 15px; font-size: 13px; font-weight: 700; border-radius: 4px; border-left: 3px solid #0056b3;">
+        Primary Ride: ${bikeChoice}
+      </div>
+    </div>
+  </div>
+
+  <!-- BIO STATS GRID -->
+  <div class="bo-profile-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; background-color: #111111; color: #ffffff; padding: 25px; border-radius: 8px; margin-bottom: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+    <div style="display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 10px;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999999; letter-spacing: 1px; margin-bottom: 5px;">Discipline</span>
+      <span style="font-size: 16px; font-weight: 700; color: #0088ff;">${discipline}</span>
+    </div>
+    <div style="display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 10px;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999999; letter-spacing: 1px; margin-bottom: 5px;">Hometown</span>
+      <span style="font-size: 16px; font-weight: 700;">${hometown}</span>
+    </div>
+    <div style="display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 10px;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999999; letter-spacing: 1px; margin-bottom: 5px;">Date of Birth</span>
+      <span style="font-size: 16px; font-weight: 700;">${born}</span>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #999999; letter-spacing: 1px; margin-bottom: 5px;">Main Partner</span>
+      <span style="font-size: 16px; font-weight: 700; color: #00ff88;">${primarySponsor}</span>
+    </div>
+  </div>
+
+  <!-- CONTENT GRID (STORY) -->
+  <div class="bo-profile-body" style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+    
+    <!-- INTRODUCTORY BOLD STATEMENT -->
+    <div class="bo-profile-intro" style="font-size: 18px; line-height: 1.7; font-weight: 400; color: #333333; margin-bottom: 10px; border-left: 4px solid #111111; padding-left: 20px;">
+      ${introParagraph}
     </div>
 
-    <script>
-        function showSection(sectionId, element) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('section-hidden');
-            });
+    <!-- MAIN SECTIONS -->
+    <div class="bo-profile-sections-wrapper">
+      ${sectionsHTML}
+    </div>
 
-            // Show target section
-            document.getElementById(sectionId).classList.remove('section-hidden');
+    <!-- DYNAMIC QUOTE BLOCK -->
+    ${quoteSectionHTML}
 
-            // Update navigation styles
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('nav-active');
-            });
-            element.classList.add('nav-active');
-        }
-    </script>
+    <!-- CONCLUDING OUTRO SIGN-OFF -->
+    <div class="bo-profile-outro" style="text-align: center; background-color: #fcfcfc; border: 1px dashed #cccccc; padding: 30px; border-radius: 8px; margin-top: 20px;">
+      <p style="margin: 0 0 15px 0; font-size: 15px; color: #555555; line-height: 1.5;">Follow ${riderName}'s racing journey and exclusive updates with BikesOnline. Subscribe to our newsletter to receive brand announcements, technical maintenance tips, and first looks at upcoming builds.</p>
+      <a href="/pages/newsletter" style="display: inline-block; background-color: #111111; color: #ffffff; text-decoration: none; padding: 12px 25px; font-size: 13px; font-weight: 700; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; transition: background 0.2s ease;">Join Team BikesOnline</a>
+    </div>
 
-</body>
-</html>
+  </div>
+</div>`;
+  };
+
+  // COPY CODE WITH CLIPBOARD FALLBACK
+  const copyToClipboard = () => {
+    const code = generateHTML();
+    const tempTextArea = document.createElement('textarea');
+    tempTextArea.value = code;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    try {
+      document.execCommand('copy');
+      setCopyStatus(true);
+      setTimeout(() => setCopyStatus(false), 2000);
+    } catch (err) {
+      console.error("Could not copy text: ", err);
+    }
+    document.body.removeChild(tempTextArea);
+  };
+
+  // Download raw HTML file
+  const downloadHTMLFile = () => {
+    const element = document.createElement("a");
+    const file = new Blob([generateHTML()], {type: 'text/html'});
+    element.href = URL.createObjectURL(file);
+    element.download = `${formData.slug || 'rider-profile'}-template.html`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col font-sans">
+      
+      {/* HEADER SECTION */}
+      <header className="bg-slate-950 border-b border-slate-800 px-6 py-4 flex flex-wrap justify-between items-center gap-4 shadow-md">
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-600 p-2 rounded-lg text-white">
+            <Bike className="w-6 h-6 animate-pulse" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+              BikesOnline <span className="text-blue-500 font-medium text-sm px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30">Rider Profile Builder</span>
+            </h1>
+            <p className="text-xs text-slate-400">Standardized & uniform Bloggle/Shopify custom HTML generator</p>
+          </div>
+        </div>
+
+        {/* PRESET CHANGER & CONTROLS */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Quick Templates:</span>
+          <div className="inline-flex rounded-lg bg-slate-800 p-1 border border-slate-700">
+            <button
+              onClick={() => handlePresetChange('sam')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedPreset === 'sam' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            >
+              Sam Reynolds
+            </button>
+            <button
+              onClick={() => handlePresetChange('matt')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedPreset === 'matt' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            >
+              Matt Jones
+            </button>
+            <button
+              onClick={() => handlePresetChange('blank')}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${selectedPreset === 'blank' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+            >
+              Blank Draft
+            </button>
+          </div>
+
+          <button 
+            onClick={resetForm} 
+            title="Reset preset changes" 
+            className="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-all"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </div>
+      </header>
+
+      {/* CORE WORKSPACE */}
+      <main className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+        
+        {/* LEFT COMPONENT: DATA INPUT FORM */}
+        <section className="col-span-1 lg:col-span-5 border-r border-slate-800 flex flex-col h-[calc(100vh-73px)] overflow-y-auto bg-slate-900 p-6 space-y-6">
+          
+          <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-500" /> Customize Profile Details
+            </h2>
+            <span className="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400 font-mono">Format: HTML5/CSS3</span>
+          </div>
+
+          {/* BASIC ATHELETE INFO */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Athlete Identity</h3>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Rider Name</label>
+                <input 
+                  type="text" 
+                  value={formData.riderName}
+                  onChange={(e) => handleChange('riderName', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Sam Reynolds"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Punchy Tagline / Role</label>
+                <input 
+                  type="text" 
+                  value={formData.tagline}
+                  onChange={(e) => handleChange('tagline', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. The Architect of Freeride"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Blog Slug URL</label>
+                <input 
+                  type="text" 
+                  value={formData.slug}
+                  onChange={(e) => handleChange('slug', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-400 focus:outline-none focus:border-blue-500 font-mono"
+                  placeholder="rider-profile-slug"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Primary Sponsor</label>
+                <input 
+                  type="text" 
+                  value={formData.primarySponsor}
+                  onChange={(e) => handleChange('primarySponsor', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Polygon Bikes"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* BIO METRICS / QUICK STATS */}
+          <div className="space-y-4 pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Athlete Key Metrics</h3>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Discipline</label>
+                <input 
+                  type="text" 
+                  value={formData.discipline}
+                  onChange={(e) => handleChange('discipline', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. MTB – Freeride"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Hometown</label>
+                <input 
+                  type="text" 
+                  value={formData.hometown}
+                  onChange={(e) => handleChange('hometown', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Surrey, UK"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Birthdate</label>
+                <input 
+                  type="text" 
+                  value={formData.born}
+                  onChange={(e) => handleChange('born', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. 4 June 1991"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-400 mb-1">Primary Bike Choice</label>
+                <input 
+                  type="text" 
+                  value={formData.bikeChoice}
+                  onChange={(e) => handleChange('bikeChoice', e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                  placeholder="e.g. Polygon Collossus N9"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ASSETS & HERO PICTURES */}
+          <div className="space-y-4 pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Creative Assets & Images</h3>
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1 flex justify-between">
+                <span>Hero Banner Background URL</span>
+                <span className="text-[10px] text-slate-500 italic">Recommended: 1200x500px</span>
+              </label>
+              <input 
+                type="text" 
+                value={formData.imageHero}
+                onChange={(e) => handleChange('imageHero', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-300 font-mono focus:outline-none focus:border-blue-500"
+                placeholder="https://images.unsplash.com/..."
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1 flex justify-between">
+                <span>Rider Avatar Picture URL</span>
+                <span className="text-[10px] text-slate-500 italic">Square aspect ratio</span>
+              </label>
+              <input 
+                type="text" 
+                value={formData.imageAvatar}
+                onChange={(e) => handleChange('imageAvatar', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-slate-300 font-mono focus:outline-none focus:border-blue-500"
+                placeholder="https://images.unsplash.com/..."
+              />
+            </div>
+          </div>
+
+          {/* STORY PARAGRAPHS */}
+          <div className="space-y-4 pt-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Intro Statement & SEO Meta</h3>
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1">
+                Intro Paragraph <span className="text-red-500">*</span>
+              </label>
+              <textarea 
+                value={formData.introParagraph}
+                onChange={(e) => handleChange('introParagraph', e.target.value)}
+                rows={4}
+                className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+                placeholder="Write a powerful summary introduction paragraph. This sets the pace and outlines the athlete's reputation."
+              />
+              <p className="text-[10px] text-slate-400 mt-1">This paragraph doubles as the standard starting text for high-engagement readers and SEO indexing.</p>
+            </div>
+
+            <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+              <span className="text-xs font-semibold text-slate-300 flex items-center gap-1">
+                <FileText className="w-3.5 h-3.5 text-blue-500" /> SEO Preview Details
+              </span>
+              <div className="text-xs space-y-1">
+                <p className="text-blue-400 font-medium truncate">{formData.metaTitle}</p>
+                <p className="text-emerald-500 text-[11px] truncate">bikesonline.com.au/blogs/bo-team-culture/{formData.slug}</p>
+                <p className="text-slate-400 text-[11px] line-clamp-2">{formData.metaDescription}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* DYNAMIC ARTICLE CONTENT SECTIONS */}
+          <div className="space-y-4 pt-2">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Story Timeline & Details</h3>
+              <button 
+                onClick={addSection}
+                className="text-xs flex items-center gap-1 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-2 py-1 rounded transition-all"
+              >
+                <Plus className="w-3 h-3" /> Add Section
+              </button>
+            </div>
+
+            {formData.sections.map((sec, index) => (
+              <div key={sec.id} className="p-4 bg-slate-950 border border-slate-800 rounded-lg relative space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs font-bold text-slate-400">Section #{index + 1}</span>
+                  <button 
+                    onClick={() => removeSection(sec.id)}
+                    className="text-slate-500 hover:text-red-400 p-1"
+                    title="Delete section"
+                  >
+                    <Trash className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-medium text-slate-500 mb-1">Heading</label>
+                  <input 
+                    type="text" 
+                    value={sec.title}
+                    onChange={(e) => handleSectionChange(sec.id, 'title', e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] font-medium text-slate-500 mb-1">Paragraph Content</label>
+                  <textarea 
+                    value={sec.content}
+                    onChange={(e) => handleSectionChange(sec.id, 'content', e.target.value)}
+                    rows={4}
+                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* ATTRIBUTION / HIGHLIGHTED QUOTE */}
+          <div className="space-y-4 pt-2 pb-6">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-l-2 border-blue-500 pl-2">Main Quote block</h3>
+            
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1">Quote Text</label>
+              <textarea 
+                value={formData.quoteText}
+                onChange={(e) => handleChange('quoteText', e.target.value)}
+                rows={3}
+                className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500 resize-none"
+                placeholder="Enter inspiring or memorable statement..."
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1">Quote Author/Source Attribution</label>
+              <input 
+                type="text" 
+                value={formData.quoteAuthor}
+                onChange={(e) => handleChange('quoteAuthor', e.target.value)}
+                className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+                placeholder="e.g. Sam Reynolds"
+              />
+            </div>
+          </div>
+
+        </section>
+
+        {/* RIGHT COMPONENT: PREVIEW & CODE PANELS */}
+        <section className="col-span-1 lg:col-span-7 flex flex-col h-[calc(100vh-73px)] bg-slate-950 overflow-hidden">
+          
+          {/* BAR SELECTOR: PREVIEW vs CODE */}
+          <div className="bg-slate-900 border-b border-slate-800 px-6 py-2.5 flex justify-between items-center shrink-0">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('preview')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'preview' ? 'bg-slate-800 text-white border border-slate-700' : 'text-slate-400 hover:text-white'}`}
+              >
+                <Eye className="w-4 h-4 text-blue-400" /> Interactive Preview
+              </button>
+              <button
+                onClick={() => setActiveTab('code')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'code' ? 'bg-slate-800 text-white border border-slate-700' : 'text-slate-400 hover:text-white'}`}
+              >
+                <Code className="w-4 h-4 text-emerald-400" /> Raw HTML Template Code
+              </button>
+              <button
+                onClick={() => setActiveTab('help')}
+                className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeTab === 'help' ? 'bg-slate-800 text-white border border-slate-700' : 'text-slate-400 hover:text-white'}`}
+              >
+                <HelpCircle className="w-4 h-4 text-purple-400" /> How to use in Bloggle
+              </button>
+            </div>
+
+            {/* IF PREVIEW, SHOW SCREEN BREAKPOINT EMULATORS */}
+            {activeTab === 'preview' && (
+              <div className="hidden sm:flex items-center gap-1 bg-slate-950 rounded p-1 border border-slate-800">
+                <button
+                  onClick={() => setPreviewMode('desktop')}
+                  className={`p-1.5 rounded transition-all ${previewMode === 'desktop' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  title="Desktop View"
+                >
+                  <Monitor className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => setPreviewMode('mobile')}
+                  className={`p-1.5 rounded transition-all ${previewMode === 'mobile' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  title="Mobile View"
+                >
+                  <Smartphone className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* ACTIONS: COPY OR DOWNLOAD */}
+            <div className="flex gap-2">
+              <button
+                onClick={copyToClipboard}
+                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+              >
+                {copyStatus ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copyStatus ? 'Copied!' : 'Copy Template Code'}
+              </button>
+              <button
+                onClick={downloadHTMLFile}
+                className="p-1.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 rounded-lg text-slate-200 hover:text-white"
+                title="Download HTML template"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* ACTIVE CONTENT WORKSPACE */}
+          <div className="flex-1 overflow-y-auto p-6 bg-slate-950 flex justify-center">
+            
+            {/* VIEW 1: RENDERED LIVE PREVIEW */}
+            {activeTab === 'preview' && (
+              <div 
+                className={`w-full transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[400px] border-8 border-slate-800 rounded-2xl bg-white shadow-2xl h-[720px] overflow-y-auto' : 'max-w-[950px]'}`}
+              >
+                <div className="bg-white text-slate-900 rounded-xl overflow-hidden shadow-lg p-6 sm:p-10 text-left">
+                  
+                  {/* BRAND CHROME (MOCK BLOG PAGE BAR) */}
+                  <div className="border-b border-slate-100 pb-3 mb-6 flex justify-between items-center text-xs text-slate-400 uppercase tracking-widest">
+                    <span>BIKESONLINE BLOG</span>
+                    <span>BO Team & Culture</span>
+                  </div>
+
+                  {/* META BLOCK TITLE */}
+                  <div className="text-center mb-8 border-b-2 border-slate-900 pb-8">
+                    <span className="text-xs text-blue-600 font-bold uppercase tracking-widest block mb-2">Team Athlete Profile</span>
+                    <h1 className="text-3xl sm:text-5xl font-black text-slate-900 uppercase tracking-tight leading-none mb-3">
+                      {formData.riderName || "Enter Name"}
+                    </h1>
+                    <p className="text-lg sm:text-xl font-light text-slate-500 max-w-2xl mx-auto leading-normal">
+                      {formData.tagline || "Enter punchy description tagline"}
+                    </p>
+                  </div>
+
+                  {/* HERO BANNER GRAPHIC */}
+                  <div 
+                    className="relative rounded-lg overflow-hidden h-64 sm:h-96 bg-cover bg-center mb-8 flex items-end shadow-inner"
+                    style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.7)), url('${formData.imageHero}')` }}
+                  >
+                    <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-3 py-1.5 rounded text-white text-[11px] font-bold tracking-wider uppercase">
+                      BikesOnline Pro
+                    </div>
+                    <div className="p-4 sm:p-6 flex items-center gap-4 w-full justify-between flex-wrap">
+                      <div className="flex items-center gap-3">
+                        <img 
+                          src={formData.imageAvatar} 
+                          alt={formData.riderName} 
+                          className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md"
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                        <div>
+                          <h4 className="text-white text-lg font-bold drop-shadow">{formData.riderName}</h4>
+                          <span className="text-[11px] text-blue-400 font-semibold uppercase tracking-wider block">Polygon / BikesOnline</span>
+                        </div>
+                      </div>
+                      <div className="bg-slate-900/95 backdrop-blur-md border-l-2 border-blue-500 rounded px-3 py-1.5 text-xs font-semibold text-white">
+                        Bike: {formData.bikeChoice}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* STATS STRIP */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-900 text-white rounded-lg p-5 mb-8">
+                    <div className="border-r border-slate-800 pr-2">
+                      <span className="block text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">Discipline</span>
+                      <span className="text-sm font-bold text-blue-400">{formData.discipline}</span>
+                    </div>
+                    <div className="md:border-r border-slate-800 pr-2">
+                      <span className="block text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">Hometown</span>
+                      <span className="text-sm font-bold">{formData.hometown}</span>
+                    </div>
+                    <div className="border-r border-slate-800 pr-2">
+                      <span className="block text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">Born</span>
+                      <span className="text-sm font-bold">{formData.born}</span>
+                    </div>
+                    <div>
+                      <span className="block text-[10px] uppercase text-slate-400 font-bold tracking-wider mb-1">Main Partner</span>
+                      <span className="text-sm font-bold text-emerald-400">{formData.primarySponsor}</span>
+                    </div>
+                  </div>
+
+                  {/* INTRO PARAGRAPH */}
+                  <div className="text-base sm:text-lg text-slate-700 leading-relaxed font-normal mb-8 border-l-4 border-slate-900 pl-4 italic">
+                    {formData.introParagraph}
+                  </div>
+
+                  {/* BIO SECTIONS */}
+                  <div className="space-y-8">
+                    {formData.sections.map(sec => (
+                      <div key={sec.id} className="border-b border-slate-100 pb-6 last:border-0 last:pb-0">
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 uppercase tracking-tight mb-3">
+                          {sec.title}
+                        </h3>
+                        <p className="text-sm sm:text-base text-slate-600 leading-relaxed text-justify">
+                          {sec.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* QUOTE BLOCK */}
+                  {formData.quoteText && (
+                    <div className="my-10 p-6 bg-slate-50 border-l-4 border-blue-600 rounded-r">
+                      <p className="text-lg text-slate-800 font-serif italic mb-2">
+                        “{formData.quoteText}”
+                      </p>
+                      <span className="text-xs uppercase tracking-wider font-bold text-blue-600">— {formData.quoteAuthor || formData.riderName}</span>
+                    </div>
+                  )}
+
+                  {/* SIGN-OFF BUTTON */}
+                  <div className="text-center bg-slate-50 border border-slate-100 rounded-lg p-6 mt-10">
+                    <p className="text-xs text-slate-500 mb-4">Follow {formData.riderName}'s racing journey and exclusive updates with BikesOnline.</p>
+                    <button className="bg-slate-900 text-white text-xs font-bold uppercase tracking-widest px-6 py-3 rounded hover:bg-blue-600 transition-all">
+                      Join Team BikesOnline
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 2: RAW HTML CODE OUTPUT */}
+            {activeTab === 'code' && (
+              <div className="w-full max-w-[950px] flex flex-col h-full bg-slate-900 border border-slate-800 rounded-lg overflow-hidden">
+                <div className="bg-slate-950 px-4 py-2 border-b border-slate-800 flex justify-between items-center shrink-0">
+                  <span className="text-xs text-slate-400 font-mono">Custom Bloggle HTML Block (Ready to paste)</span>
+                  <span className="text-[10px] text-slate-500 italic">Pre-styled inline CSS ensures uniform layout</span>
+                </div>
+                <div className="flex-1 p-4 font-mono text-xs text-slate-300 overflow-auto select-all whitespace-pre">
+                  {generateHTML()}
+                </div>
+              </div>
+            )}
+
+            {/* VIEW 3: BLOGGLE HOW-TO MANUAL */}
+            {activeTab === 'help' && (
+              <div className="w-full max-w-[800px] text-left text-slate-300 space-y-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                    <BookOpen className="w-5 h-5 text-purple-400" /> Standardized Blog Template Strategy
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-400 mb-4">
+                    In ecommerce publishing, creating custom blog articles natively in Shopify or Bloggle can lead to misaligned elements and layout shifts. This template ensures that **all future athlete blogs share the same high-end, clean brand presentation**.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                      <span className="text-blue-400 font-bold text-sm block mb-1">1. Customize Content</span>
+                      <p className="text-xs text-slate-400 leading-normal">Fill in the profile specifications on the left. The generator will automatically build aligned elements.</p>
+                    </div>
+                    <div className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                      <span className="text-emerald-400 font-bold text-sm block mb-1">2. Copy Code</span>
+                      <p className="text-xs text-slate-400 leading-normal">Click the green <span className="font-semibold text-white">Copy Template Code</span> button to load the precompiled standard code into your clipboard.</p>
+                    </div>
+                    <div className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                      <span className="text-purple-400 font-bold text-sm block mb-1">3. Paste into Bloggle</span>
+                      <p className="text-xs text-slate-400 leading-normal">In the Bloggle editor dashboard, add a **Custom HTML** block and paste the generated code instantly.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-bold text-white text-base">Pro Tips for Best Presentation:</h4>
+                  
+                  <ul className="space-y-3 text-sm text-slate-400 list-disc pl-5">
+                    <li>
+                      <strong className="text-slate-200">Image Asset Hosting:</strong> Upload your hero images directly to the Shopify files CDN (<span className="font-mono text-slate-300">Shopify Admin &gt; Content &gt; Files</span>), then copy and paste the HTTPS links here for optimized load speeds.
+                    </li>
+                    <li>
+                      <strong className="text-slate-200">SEO Meta Integrity:</strong> Keep titles under 60 characters and description snippets under 155 characters. The tool does this automatically when you update your tagline and introductory statement.
+                    </li>
+                    <li>
+                      <strong className="text-slate-200">Consistency Matters:</strong> Using the exact same biography metric list for all riders (Discipline, Hometown, Born, Main Ride) keeps your brand looking neat and professional across all profile links.
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-slate-900 border border-slate-800 p-4 rounded-lg flex items-center justify-between">
+                  <div>
+                    <span className="text-white font-bold text-sm block">Looking to expand layout styles?</span>
+                    <p className="text-xs text-slate-400">You can easily customize this template by adding custom images or links with inline HTML attributes.</p>
+                  </div>
+                  <button 
+                    onClick={() => handlePresetChange('blank')} 
+                    className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all flex items-center gap-1.5"
+                  >
+                    Load Fresh Slate <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+          </div>
+
+          {/* BOTTOM QUICK FOOTER */}
+          <footer className="bg-slate-950 border-t border-slate-900 px-6 py-3 flex justify-between items-center text-[11px] text-slate-500 shrink-0">
+            <span>BikesOnline Team Culture Blog Resource</span>
+            <span>Created for Shopify & Bloggle CMS Integrations</span>
+          </footer>
+
+        </section>
+
+      </main>
+
+    </div>
+  );
+}

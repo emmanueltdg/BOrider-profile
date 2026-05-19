@@ -42,27 +42,15 @@
         <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
           BikesOnline <span class="text-blue-500 font-medium text-sm px-2 py-0.5 rounded bg-blue-500/15 border border-blue-500/30">Rider Template Portal</span>
         </h1>
-        <p class="text-xs text-slate-400">Export high-quality PDFs, Images, or raw HTML for Bloggle</p>
+        <p class="text-xs text-slate-400">Export high-quality PDFs, Images, or raw HTML for your Blog</p>
       </div>
     </div>
 
-    <!-- PRESETS & QUICK CONTROLS -->
-    <div class="flex items-center gap-2 flex-wrap">
-      <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Quick Presets:</span>
-      <div class="inline-flex rounded-lg bg-slate-900 p-1 border border-slate-800">
-        <button onclick="loadPreset('sam')" id="preset-sam" class="preset-btn px-3 py-1.5 rounded-md text-xs font-medium bg-blue-600 text-white shadow transition-all">
-          Sam Reynolds
-        </button>
-        <button onclick="loadPreset('matt')" id="preset-matt" class="preset-btn px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white transition-all">
-          Matt Jones
-        </button>
-        <button onclick="loadPreset('blank')" id="preset-blank" class="preset-btn px-3 py-1.5 rounded-md text-xs font-medium text-slate-400 hover:text-white transition-all">
-          Blank Slate
-        </button>
-      </div>
-
-      <button onclick="resetCurrentForm()" title="Reset current preset modifications" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-all">
-        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+    <!-- QUICK CONTROLS -->
+    <div class="flex items-center gap-2">
+      <button onclick="resetCurrentForm()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5 shadow-sm" title="Reset template back to default empty state">
+        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+        <span>Reset Slate</span>
       </button>
     </div>
   </header>
@@ -182,25 +170,20 @@
 
     </section>
 
-    <!-- RIGHT PANEL: INTERACTIVE CANVAS WITH RENDER MODES -->
+    <!-- RIGHT PANEL: INTERACTIVE CANVAS WITH RENDERING & CODES -->
     <section class="col-span-1 lg:col-span-7 flex flex-col h-full bg-slate-950 overflow-hidden">
       
       <!-- SUB NAVIGATION ENGINE BAR -->
       <div class="bg-slate-900 border-b border-slate-800 px-6 py-2.5 flex justify-between items-center shrink-0">
-        <div class="flex gap-2">
-          <button onclick="switchTab('tab-bloggle')" id="btn-tab-bloggle" class="tab-btn flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all bg-slate-800 text-white border border-slate-700">
-            <i data-lucide="eye" class="w-4 h-4 text-blue-400"></i> Premium Preview (Bloggle)
-          </button>
-          <button onclick="switchTab('tab-github')" id="btn-tab-github" class="tab-btn flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
-            <i data-lucide="github" class="w-4 h-4 text-emerald-400"></i> GitHub-Safe Preview
-          </button>
-          <button onclick="switchTab('tab-code')" id="btn-tab-code" class="tab-btn flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-400 hover:text-white">
-            <i data-lucide="code" class="w-4 h-4 text-purple-400"></i> Get Code Blocks
-          </button>
+        <div class="flex gap-2 items-center">
+          <span class="text-xs font-semibold bg-slate-800 text-blue-400 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5">
+            <i data-lucide="book-open" class="w-4 h-4 text-blue-400 animate-pulse"></i>
+            <span>Active Blog Post Layout & Template Code</span>
+          </span>
         </div>
 
         <!-- RESOLUTION SIZE FOR PREVIEW -->
-        <div id="resolution-selector" class="hidden sm:flex items-center gap-1 bg-slate-950 rounded p-1 border border-slate-800">
+        <div id="resolution-selector" class="flex items-center gap-1 bg-slate-950 rounded p-1 border border-slate-800">
           <button onclick="setResolution('desktop')" id="res-desktop" class="res-btn p-1.5 rounded bg-blue-600 text-white transition-all" title="Desktop Layout">
             <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
           </button>
@@ -229,39 +212,29 @@
       <!-- RENDERING INTERACTIVE WORKSPACE CONTAINER -->
       <div id="viewport-container" class="flex-1 overflow-y-auto p-6 bg-slate-950 flex justify-center items-start transition-all duration-300">
         
-        <!-- PREVIEW CANVAS FRAME -->
-        <div id="preview-wrapper" class="w-full max-w-[950px] transition-all duration-300">
+        <!-- PREVIEW CANVAS FRAME (STACKED PREVIEW + CODE PANEL) -->
+        <div id="preview-wrapper" class="w-full max-w-[950px] space-y-6 transition-all duration-300">
           
           <!-- SUB CONTAINER 1: THE ACTUAL RENDERED LIVE PREVIEW -->
           <div id="render-sandbox" class="bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl p-6 sm:p-10 text-left border border-slate-200">
             <!-- Dynamically populated via JS -->
           </div>
 
-        </div>
-
-        <!-- CODE COMPONENT TAB WRAPPER -->
-        <div id="code-sandbox-wrapper" class="hidden w-full max-w-[950px] flex flex-col gap-6">
-          
-          <!-- PREMIUM CODE CARD -->
-          <div class="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex flex-col">
-            <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center shrink-0">
+          <!-- SUB CONTAINER 2: THE COMPANION CODE VIEWER -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col shadow-xl">
+            <div class="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex justify-between items-center shrink-0">
               <span class="text-xs text-slate-300 font-bold flex items-center gap-1.5">
-                <i data-lucide="sparkles" class="w-4 h-4 text-blue-400"></i> Option A: Premium Bloggle HTML Block
+                <i data-lucide="code-2" class="w-4 h-4 text-blue-400"></i>
+                <span>Generated Shopify / Bloggle Block HTML Code</span>
               </span>
-              <span class="text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded uppercase font-bold tracking-wider">Store Front Optimized</span>
+              <div class="flex items-center gap-2">
+                <button onclick="copyActiveCode()" class="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded text-[11px] font-semibold transition-all">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                  <span>Copy Code</span>
+                </button>
+              </div>
             </div>
-            <textarea id="raw-code-bloggle" readonly onclick="this.select()" class="p-4 font-mono text-xs text-slate-300 bg-slate-950 border-0 focus:ring-0 resize-none h-48 select-all cursor-pointer leading-relaxed"></textarea>
-          </div>
-
-          <!-- GITHUB COMPLIANT CODE CARD -->
-          <div class="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex flex-col">
-            <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center shrink-0">
-              <span class="text-xs text-slate-300 font-bold flex items-center gap-1.5">
-                <i data-lucide="github" class="w-4 h-4 text-emerald-400"></i> Option B: GitHub Markdown-Friendly HTML
-              </span>
-              <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded uppercase font-bold tracking-wider">Sanitization Bypass</span>
-            </div>
-            <textarea id="raw-code-github" readonly onclick="this.select()" class="p-4 font-mono text-xs text-slate-300 bg-slate-950 border-0 focus:ring-0 resize-none h-48 select-all cursor-pointer leading-relaxed"></textarea>
+            <textarea id="active-preview-code" readonly onclick="this.select()" class="w-full p-4 font-mono text-[11px] text-slate-300 bg-slate-950 border-0 focus:ring-0 resize-none h-44 select-all cursor-pointer leading-relaxed rounded-b-xl focus:outline-none"></textarea>
           </div>
 
         </div>
@@ -285,46 +258,8 @@
   </div>
 
   <script>
-    // PRESET METADATA
+    // PRESET METADATA (EXCLUSIVELY STARTING AS A CLEAN BLANK BOILERPLATE)
     const PRESETS = {
-      sam: {
-        riderName: "Sam Reynolds",
-        tagline: "The Architect of Freeride",
-        slug: "rider-profile-sam-reynolds",
-        primarySponsor: "Polygon Bikes",
-        discipline: "MTB – Freeride / Big Air",
-        hometown: "Surrey, UK",
-        born: "4 June 1991",
-        bikeChoice: "Polygon Collossus N9 & Mt Bromo N7",
-        imageHero: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=1200",
-        introParagraph: "Sam Reynolds is one of the most influential figures in modern freeride mountain biking. Renowned for his calm approach to high-risk riding and his ability to push the limits of what is possible on a mountain bike, Sam has built a career defined by progression, creativity, and consistency at the very top level of the sport.",
-        quoteText: "I'm so excited to be back again with the Polygon Bikes crew for 2026 onwards! Looking back at the great times we've had in the past, I couldn't be happier to continue where we left off. We've got some wicked projects in the works and some pretty special bikes to reveal throughout the year.",
-        quoteAuthor: "Sam Reynolds",
-        sections: [
-          { title: "Career Highlights", content: "Sam's competitive career spans elite freeride and slopestyle events worldwide. He rose to global prominence at the 2015 Red Bull Rampage, where he claimed the Best Trick award after landing a superman over a massive 72-foot canyon gap. In the same event, he went on to debut the now-iconic 'Rock Solid' trick, cementing his reputation as a rider willing to innovate on the biggest stage." },
-          { title: "Darkfest & Course Building", content: "Sam is not only a standout rider but also a key architect of freeride's progression. As one of the driving forces behind Darkfest, he has helped design and build some of the largest and most technical jumps ever seen in mountain biking. His involvement in the FEST Series further highlights his role in shaping the future of freeride, both on and off the bike." },
-          { title: "Return to Polygon Bikes", content: "In 2026, Sam Reynolds officially returned to Polygon Bikes after five years away, renewing a partnership that previously spanned a decade. The reunion marks a new chapter focused on big-air projects, cinematic video content, and select international showcases." }
-        ]
-      },
-      matt: {
-        riderName: "Matt Jones",
-        tagline: "Slopestyle Master & Content Pioneer",
-        slug: "rider-profile-matt-jones",
-        primarySponsor: "Marin Bikes / Red Bull",
-        discipline: "Freeride / Slopestyle",
-        hometown: "Milton Keynes, UK",
-        born: "13 August 1994",
-        bikeChoice: "Marin Alcatraz & Rift Zone",
-        imageHero: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&q=80&w=1200",
-        introParagraph: "Matt Jones is one of the most recognisable and influential figures in modern slopestyle mountain biking. Known for his technical precision, competitive mindset, and unmistakable personality, Matt has built a career that blends elite-level competition with creative storytelling and industry leadership.",
-        quoteText: "Every session became a contest and progression was a daily expectation. Pushing the boundaries of what tricks are physically possible is what keeps me obsessed with this sport every single day.",
-        quoteAuthor: "Matt Jones",
-        sections: [
-          { title: "Creative Direction & Film", content: "Beyond contests, Matt has played a major role in redefining how slopestyle riders connect with audiences. His video projects, including Frames of Mind and Design and Conquer, showcase not only technical riding but also thoughtful course design, progression, and high-production storytelling." },
-          { title: "Digital Influence", content: "Matt runs one of the world's top athlete-led mountain bike YouTube channels, offering behind-the-scenes insight into competition life, course building, and the mental side of elite riding. His openness and authenticity have made him a key voice in the global MTB community." },
-          { title: "Industry & Entrepreneurship", content: "Off the bike, Matt is a co-founder of the global MTB and lifestyle brand Helfare, and a co-founder of MAVRIX, a studio focused on creating authentic, athlete-led extreme sports video games across console, PC, and mobile platforms." }
-        ]
-      },
       blank: {
         riderName: "Rider Name",
         tagline: "Enter Rider Subtitle Tagline",
@@ -339,13 +274,12 @@
         quoteText: "Enter a personal quote or statement from the athlete that represents their attitude on the trails.",
         quoteAuthor: "Rider Name",
         sections: [
-          { title: "Early Achievements", content: "Write some details about the rider's early progression, their evolution from hobby trail explorer to elite professional athlete status." }
+          { title: "Early Achievements", content: "Write some details about the rider's early progression, their evolution from hobby trail explorer to elite professional status." }
         ]
       }
     };
 
-    let activeState = JSON.parse(JSON.stringify(PRESETS.sam));
-    let currentTab = 'tab-bloggle';
+    let activeState = JSON.parse(JSON.stringify(PRESETS.blank));
     let currentResolution = 'desktop';
 
     // INITIALIZATION RUNNER
@@ -355,29 +289,17 @@
       renderUI();
     });
 
-    // LOAD FORMS WITH PRESET CONTENT
+    // LOAD SLATE BOILERPLATE
     function loadPreset(key) {
       activeState = JSON.parse(JSON.stringify(PRESETS[key]));
-      
-      // Update UI button selection
-      document.querySelectorAll('.preset-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600', 'text-white', 'shadow');
-        btn.classList.add('text-slate-400', 'hover:text-white');
-      });
-      document.getElementById(`preset-${key}`).classList.add('bg-blue-600', 'text-white', 'shadow');
-      document.getElementById(`preset-${key}`).classList.remove('text-slate-400', 'hover:text-white');
-
       loadFormState();
       renderUI();
     }
 
-    // RESET FUNCTION
+    // RESET FUNCTION TO DEFAULT STATE
     function resetCurrentForm() {
-      const activePresetBtn = document.querySelector('.preset-btn.bg-blue-600');
-      if (activePresetBtn) {
-        const id = activePresetBtn.id.replace('preset-', '');
-        loadPreset(id);
-      }
+      loadPreset('blank');
+      showToast("Slate reset to master boilerplate!");
     }
 
     // SYNC STATE TO DOM FORM ELEMENTS
@@ -429,7 +351,6 @@
     // AUTOMATIC SEO SYNC ON TAGLINE / NAME UPDATES
     function updateSEO() {
       const riderName = activeState.riderName || 'Rider';
-      const tagline = activeState.tagline || '';
       activeState.slug = riderName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       const slugInput = document.getElementById('input-slug');
       if (slugInput) slugInput.value = activeState.slug;
@@ -465,35 +386,9 @@
 
       const wrapper = document.getElementById('preview-wrapper');
       if (res === 'mobile') {
-        wrapper.className = "w-full max-w-[400px] border-8 border-slate-800 rounded-3xl bg-white shadow-2xl h-[700px] overflow-y-auto";
+        wrapper.className = "w-full max-w-[400px] border-8 border-slate-800 rounded-3xl bg-white shadow-2xl h-[700px] overflow-y-auto space-y-6";
       } else {
-        wrapper.className = "w-full max-w-[950px]";
-      }
-    }
-
-    // TAB MANAGER
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-slate-800', 'text-white', 'border', 'border-slate-700');
-        btn.classList.add('text-slate-400', 'hover:text-white');
-      });
-      document.getElementById(`btn-${tabId}`).classList.add('bg-slate-800', 'text-white', 'border', 'border-slate-700');
-      document.getElementById(`btn-${tabId}`).classList.remove('text-slate-400', 'hover:text-white');
-
-      const previewWrapper = document.getElementById('preview-wrapper');
-      const codeSandbox = document.getElementById('code-sandbox-wrapper');
-      const resSelector = document.getElementById('resolution-selector');
-
-      if (tabId === 'tab-code') {
-        previewWrapper.classList.add('hidden');
-        codeSandbox.classList.remove('hidden');
-        resSelector.classList.add('hidden');
-      } else {
-        previewWrapper.classList.remove('hidden');
-        codeSandbox.classList.add('hidden');
-        resSelector.classList.remove('hidden');
-        renderUI();
+        wrapper.className = "w-full max-w-[950px] space-y-6";
       }
     }
 
@@ -571,104 +466,26 @@
 </div>`;
     }
 
-    function buildGithubHTML() {
-      const { riderName, tagline, primarySponsor, discipline, hometown, born, bikeChoice, imageHero, introParagraph, quoteText, quoteAuthor, sections } = activeState;
-
-      const sectionsHTML = sections.map(sec => `
-<h3>${sec.title}</h3>
-<p>${sec.content}</p>
-<hr />`).join('');
-
-      const quoteHTML = quoteText ? `
-<blockquote>
-  <p><em>"${quoteText}"</em></p>
-  <cite>— ${quoteAuthor || riderName}</cite>
-</blockquote>` : '';
-
-      return `<!-- 
-  GITHUB README SECURE FALLBACK TEMPLATE
-  Strictly compliant with GitHub's raw HTML sanitization rules.
-  Uses robust table blocks and absolute direct element alignments.
--->
-<div align="center">
-  <h1>${riderName.toUpperCase()}</h1>
-  <p><em>${tagline}</em></p>
-</div>
-
-<hr />
-
-<!-- Sanitized Fallback Hero: GitHub compatible standard direct HTML5 image layout -->
-<img src="${imageHero}" width="100%" alt="${riderName} Hero Banner Image" />
-
-<br /><br />
-
-<!-- Sanitized Table Fallback Stats Grid (Highly supported and non-filterable in GitHub Markdown views) -->
-<table width="100%" cellpadding="10" border="1" cellspacing="0" style="border-collapse: collapse; border-color: #f0f0f0;">
-  <thead>
-    <tr bgcolor="#111111">
-      <th align="left" width="25%"><font color="#ffffff">Discipline</font></th>
-      <th align="left" width="25%"><font color="#ffffff">Hometown</font></th>
-      <th align="left" width="25%"><font color="#ffffff">Born</font></th>
-      <th align="left" width="25%"><font color="#ffffff">Main Sponsor</font></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong><font color="#0056b3">${discipline}</font></strong></td>
-      <td>${hometown}</td>
-      <td>${born}</td>
-      <td><strong><font color="#22c55e">${primarySponsor}</font></strong></td>
-    </tr>
-    <tr>
-      <td colspan="4" bgcolor="#f9f9f9">
-        <strong>Primary Ride Choice:</strong> ${bikeChoice}
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<br />
-
-<p><strong>Overview:</strong> ${introParagraph}</p>
-
-<hr />
-
-${sectionsHTML}
-
-${quoteHTML}
-
-<br />
-
-<div align="center">
-  <p>Follow ${riderName}'s racing journey with BikesOnline.</p>
-  <a href="https://bikesonline.com.au"><strong>Visit BikesOnline Official Store</strong></a>
-</div>`;
-    }
-
     // PRIMARY RENDER PIPELINE
     function renderUI() {
-      // Build code pools
+      // Build active code pool
       const premiumHTML = buildPremiumHTML();
-      const githubHTML = buildGithubHTML();
 
-      // Set textareas
-      document.getElementById('raw-code-bloggle').value = premiumHTML;
-      document.getElementById('raw-code-github').value = githubHTML;
+      // Set textareas for copy and code block viewers
+      const activeCodeBox = document.getElementById('active-preview-code');
+      if (activeCodeBox) activeCodeBox.value = premiumHTML;
 
       // Draw inside preview canvas
       const sandbox = document.getElementById('render-sandbox');
-      if (currentTab === 'tab-bloggle') {
-        sandbox.innerHTML = premiumHTML;
-        sandbox.className = "bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl p-6 sm:p-10 text-left border border-slate-200";
-      } else if (currentTab === 'tab-github') {
-        sandbox.innerHTML = `<div class="github-markdown-body p-6 bg-white border border-slate-200 rounded-lg max-w-full">${githubHTML}</div>`;
-        sandbox.className = "bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl p-4 text-left border border-slate-200 prose prose-slate";
-      }
+      sandbox.innerHTML = premiumHTML;
+      sandbox.className = "bg-white text-slate-900 rounded-xl overflow-hidden shadow-2xl p-6 sm:p-10 text-left border border-slate-200";
+
+      lucide.createIcons();
     }
 
     // COPY CONTROLS
     function copyActiveCode() {
-      const code = (currentTab === 'tab-github') ? document.getElementById('raw-code-github').value : document.getElementById('raw-code-bloggle').value;
+      const code = buildPremiumHTML();
       const tempTextArea = document.createElement('textarea');
       tempTextArea.value = code;
       document.body.appendChild(tempTextArea);
@@ -676,7 +493,7 @@ ${quoteHTML}
       
       try {
         document.execCommand('copy');
-        showToast((currentTab === 'tab-github') ? "Copied GitHub-Safe Fallback!" : "Copied Premium Bloggle Code!");
+        showToast("Copied Premium Blog Code!");
       } catch (err) {
         console.error("Copy failed: ", err);
       }
